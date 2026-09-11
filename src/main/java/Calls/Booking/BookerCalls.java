@@ -1,13 +1,14 @@
 package Calls.Booking;
 
 import Models.Booking.BookModel;
+import Specs.Booking.RequestSpecificationBooking;
+import Utils.Config;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
 
 public class BookerCalls {
 
-    private final String BASE_URL = "https://restful-booker.herokuapp.com";
 
     // Task 1
     public Response createBookingRawJson(String firstname, String lastname, int totalprice) {
@@ -27,22 +28,22 @@ public class BookerCalls {
                 .contentType("application/json")
                 .body(body)
                 .when()
-                .post(BASE_URL + "/booking");
+                .post(Config.BOOKING_BASE_URL + Config.BOOKING_BASE_PATH);
     }
 
     // Task 2
     public Response createBookingWithModel(BookModel bookModel) {
         return given()
-                .contentType("application/json")
+                .spec(RequestSpecificationBooking.requestSpecification())
                 .body(bookModel)
                 .when()
-                .post(BASE_URL + "/booking");
+                .post();
     }
 
     // Tasks 3 & 4
     public Response getBookingById(int bookingId) {
         return given()
                 .when()
-                .get(BASE_URL + "/booking/" + bookingId);
+                .get(Config.BOOKING_BASE_URL + Config.BOOKING_BASE_PATH + bookingId);
     }
 }

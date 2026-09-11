@@ -5,6 +5,13 @@ import Models.Booking.BookingDates;
 
 public class DataControllerBooker {
 
+    public BookModel getBookModel(){
+        BookModel bookModel = new BookModel();
+        BookingDates bookingDates = new BookingDates();
+        return bookModel;
+    }
+
+
     public static BookModel getSampleBookModel() {
         BookingDates dates = new BookingDates();
         dates.checkin = "2026-09-01";
@@ -20,4 +27,5 @@ public class DataControllerBooker {
 
         return book;
     }
+
 }

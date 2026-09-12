@@ -2,14 +2,59 @@ package Steps.Booking;
 
 import Calls.Booking.BookerCalls;
 import Models.Booking.BookModel;
+import Steps.CommonSteps;
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.testng.Assert;
 
-public class BookerSteps {
+public class BookerSteps extends CommonSteps<BookerSteps, BookModel> {
 
     BookerCalls bookerCalls = new BookerCalls();
     int createdBookingId;
     BookModel expectedBookModel;
+    BookModel bookModel =  new BookModel();
+    String token;
+
+    @Step
+    public BookerSteps setBooking(BookModel bookModel) {
+        this.bookModel = bookModel;
+        return this;
+    }
+
+    @Step
+    public BookerSteps addBookingModelGeneric() {
+        Response response = bookerCalls.addBookingModel(data);
+        Assert.assertEquals(response.getStatusCode(), 200);
+        createdBookingId = response.jsonPath().getInt("bookingid");
+        return this;
+    }
+
+    @Step
+    public BookerSteps addBookingModel() {
+        Response response = bookerCalls.addBookingModel(this.bookModel);
+        Assert.assertEquals(response.getStatusCode(), 200);
+        createdBookingId = response.jsonPath().getInt("bookingid");
+        return this;
+    }
+
+    @Step
+    public BookerSteps auth() {
+            token = bookerCalls.auth().jsonPath().getString("token");
+        return this;
+    }
+
+    @Step
+    public BookerSteps deleteBooking() {
+            bookerCalls.deleteBookingModel(createdBookingId, token);
+        return this;
+    }
+
+    @Step
+    public BookerSteps checkDeletedBooking() {
+            Response response =  bookerCalls.getBookingById(createdBookingId);
+            Assert.assertEquals(response.getStatusCode(), 404);
+        return this;
+    }
 
     // Task 1
     public BookerSteps createBookingWithRawJson(String firstname, String lastname, int totalprice) {

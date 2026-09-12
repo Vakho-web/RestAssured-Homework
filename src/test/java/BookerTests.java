@@ -16,14 +16,12 @@ public class BookerTests {
         ;
     }
 
-    @Test
-    public void AddBookingModelGeneric() {
+    @Test(description = "chain with CommonSteps setData")
+    public void AddGetCheckBooking() {
         bookerSteps.setData(dataControllerBooker.getBookModel())
-                .addBookingModelGeneric()
-                .auth()
-                .deleteBooking()
-                .checkDeletedBooking();
-        ;
+                .addBook()
+                .getBooking()
+                .checkBooking();
     }
 
 

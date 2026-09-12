@@ -82,9 +82,10 @@ public class BookerCalls {
     // Tasks 3 & 4
     public Response getBookingById(int bookingId) {
         return given()
+                .spec(RequestSpecificationBooking.requestSpecification())
                 .pathParam("bookingId", bookingId)
                 .when()
-                .get(Config.BOOKING_BASE_URL + Config.BOOKING_BASE_PATH + "/{bookingId}")
+                .get("/{bookingId}")
                 .then()
                 .extract()
                 .response();

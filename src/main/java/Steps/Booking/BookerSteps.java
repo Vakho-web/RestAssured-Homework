@@ -12,7 +12,8 @@ public class BookerSteps extends CommonSteps<BookerSteps, BookModel> {
     BookerCalls bookerCalls = new BookerCalls();
     int createdBookingId;
     BookModel expectedBookModel;
-    BookModel bookModel =  new BookModel();
+    BookModel bookModel = new BookModel();
+    BookModel actualBookModel;
     String token;
 
     @Step
@@ -22,10 +23,30 @@ public class BookerSteps extends CommonSteps<BookerSteps, BookModel> {
     }
 
     @Step
-    public BookerSteps addBookingModelGeneric() {
+    public BookerSteps addBook() {
         Response response = bookerCalls.addBookingModel(data);
         Assert.assertEquals(response.getStatusCode(), 200);
         createdBookingId = response.jsonPath().getInt("bookingid");
+        return this;
+    }
+
+    @Step
+    public BookerSteps getBooking() {
+        Response response = bookerCalls.getBookingById(createdBookingId);
+        Assert.assertEquals(response.getStatusCode(), 200);
+        actualBookModel = response.as(BookModel.class);
+        return this;
+    }
+
+    @Step
+    public BookerSteps checkBooking() {
+        Assert.assertEquals(actualBookModel.firstname, data.firstname);
+        Assert.assertEquals(actualBookModel.lastname, data.lastname);
+        Assert.assertEquals(actualBookModel.totalprice, data.totalprice);
+        Assert.assertEquals(actualBookModel.depositpaid, data.depositpaid);
+        Assert.assertEquals(actualBookModel.additionalneeds, data.additionalneeds);
+        Assert.assertEquals(actualBookModel.bookingdates.checkin, data.bookingdates.checkin);
+        Assert.assertEquals(actualBookModel.bookingdates.checkout, data.bookingdates.checkout);
         return this;
     }
 

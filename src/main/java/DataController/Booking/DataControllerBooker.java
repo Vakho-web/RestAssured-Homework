@@ -5,19 +5,21 @@ import Models.Booking.BookingDates;
 
 public class DataControllerBooker {
 
-    public static BookModel getSampleBookModel() {
-        BookingDates dates = new BookingDates();
-        dates.checkin = "2026-09-01";
-        dates.checkout = "2026-09-10";
+    public BookModel getBookModel(){
+        BookModel bookModel = new BookModel();
+        BookingDates bookingDates = new BookingDates();
+        bookModel.setFirstname("John");
+        bookModel.setLastname("Doe");
+        bookModel.setTotalprice(250);
+        bookModel.setDepositpaid(true);
+        bookModel.setAdditionalneeds("Breakfast");
 
-        BookModel book = new BookModel();
-        book.firstname = "John";
-        book.lastname = "Doe";
-        book.totalprice = 250;
-        book.depositpaid = true;
-        book.bookingdates = dates;
-        book.additionalneeds = "Breakfast";
+        bookingDates.setCheckin("2026-09-01");
+        bookingDates.setCheckout("2026-09-10");
+        bookModel.setBookingdates(bookingDates);
 
-        return book;
+        return bookModel;
     }
+
+
 }

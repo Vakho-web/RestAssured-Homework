@@ -1,13 +1,14 @@
 package Calls.Booking;
 
 import Models.Booking.BookModel;
+import Specs.Booking.RequestSpecificationBooking;
+import Utils.Config;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
 
 public class BookerCalls {
 
-    private final String BASE_URL = "https://restful-booker.herokuapp.com";
 
     // Task 1
     public Response createBookingRawJson(String firstname, String lastname, int totalprice) {
@@ -27,22 +28,66 @@ public class BookerCalls {
                 .contentType("application/json")
                 .body(body)
                 .when()
-                .post(BASE_URL + "/booking");
+                .post(Config.BOOKING_BASE_URL + Config.BOOKING_BASE_PATH);
     }
 
     // Task 2
     public Response createBookingWithModel(BookModel bookModel) {
         return given()
-                .contentType("application/json")
+                .spec(RequestSpecificationBooking.requestSpecification())
                 .body(bookModel)
                 .when()
-                .post(BASE_URL + "/booking");
+                .post();
+    }
+
+    public Response addBookingModel(BookModel bookModel) {
+        return given()
+                .spec(RequestSpecificationBooking.requestSpecification())
+                .body(bookModel)
+                .when()
+                .post()
+                .then()
+                .extract()
+                .response();
+    }
+
+    public Response auth() {
+        return given()
+                .contentType("application/json")
+                .body("""
+                        {
+                          "username": "admin",
+                          "password": "password123"
+                        }
+                        """)
+                .when()
+                .post(Config.BOOKING_BASE_URL + "/auth")
+                .then()
+                .extract()
+                .response();
+    }
+
+    public Response deleteBookingModel(int id, String token) {
+        return given()
+                .spec(RequestSpecificationBooking.requestSpecification())
+                .cookie("token", token)
+                .pathParam("id", id)
+                .when()
+                .delete("/{id}")
+                .then()
+                .extract()
+                .response();
     }
 
     // Tasks 3 & 4
     public Response getBookingById(int bookingId) {
         return given()
+                .spec(RequestSpecificationBooking.requestSpecification())
+                .pathParam("bookingId", bookingId)
                 .when()
-                .get(BASE_URL + "/booking/" + bookingId);
+                .get("/{bookingId}")
+                .then()
+                .extract()
+                .response();
     }
 }
